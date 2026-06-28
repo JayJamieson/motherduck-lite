@@ -1,0 +1,61 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "motherduck-lite",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-06-01",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"observability": {
+		"enabled": true
+	},
+	// Container image backing the DuckSandbox DO. Ratios: >=3 GiB mem per vCPU,
+	// <=2 GB disk per 1 GB mem. 2 vCPU / 6 GiB / 12 GB disk satisfies both.
+	"containers": [
+		{
+			"class_name": "DuckSandbox",
+			"image": "./container/Dockerfile",
+			"instance_type": {
+				"vcpu": 2,
+				"memory_mib": 6144,
+				"disk_mb": 12000
+			},
+			"max_instances": 50
+		}
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "DUCK_SANDBOX",
+				"class_name": "DuckSandbox"
+			}
+		]
+	},
+	// Sandbox DOs use SQLite storage.
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_sqlite_classes": [
+				"DuckSandbox"
+			]
+		}
+	],
+	// R2 bucket the backup/restore API reads and writes.
+	"r2_buckets": [
+		{
+			"binding": "BACKUP_BUCKET",
+			"bucket_name": "mdl-backups"
+		}
+	],
+	"vars": {
+		// Set "true" only for `wrangler dev` so backups use the R2 binding directly.
+		"LOCAL_DEV": "false"
+	}
+	// Secrets (set with `wrangler secret put <NAME>`):
+	//   QUACK_TOKEN              shared client credential + container server token
+	// Production backups also need (presigned-URL path):
+	//   R2_ACCESS_KEY_ID
+	//   R2_SECRET_ACCESS_KEY
+	//   CLOUDFLARE_ACCOUNT_ID
+	//   BACKUP_BUCKET_NAME       (e.g. "mdl-backups")
+}

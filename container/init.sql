@@ -1,0 +1,24 @@
+-- Server-side init — runs against the DuckDB instance on EVERY boot, before
+-- the Quack server starts. Everything here is instance-level, so it's visible
+-- to every connecting client. MUST be idempotent.
+--
+-- Statements are split on ";\n" by quackhost, so end each statement with a
+-- semicolon followed by a newline, and don't put ";\n" inside a string literal.
+--
+-- This default is intentionally a no-op. Override per-database via
+-- DuckSandbox.setInitScript(sql).
+--
+-- Examples (uncomment / adapt):
+--
+-- Persistent catalog (returns via restore too — IF NOT EXISTS keeps it safe):
+-- CREATE SCHEMA IF NOT EXISTS analytics;
+-- CREATE TABLE IF NOT EXISTS analytics.events (ts TIMESTAMP, kind TEXT);
+-- CREATE OR REPLACE MACRO recent(n) AS TABLE
+--   SELECT * FROM analytics.events ORDER BY ts DESC LIMIT n;
+--
+-- NOT persisted — must be re-established each boot (the reason init re-runs):
+-- SET GLOBAL memory_limit = '4GB';
+-- CREATE SECRET r2 (TYPE s3, PROVIDER credential_chain, ENDPOINT '...');
+-- ATTACH 'r2://bucket/reference.duckdb' AS ref (READ_ONLY);
+
+SELECT 1;

@@ -1,0 +1,3 @@
+# Copy to .dev.vars for `wrangler dev`. Do NOT commit .dev.vars.
+QUACK_TOKEN="change-me-to-a-strong-random-token"
+LOCAL_DEV="true"
