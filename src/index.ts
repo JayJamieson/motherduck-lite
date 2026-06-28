@@ -49,7 +49,9 @@ export default {
 
     // One Sandbox DO instance per database id => one live container per db =>
     // single-writer is structurally guaranteed (no two Quack servers on one file).
-    const sandbox = getSandbox(env.DUCK_SANDBOX, dbId);
+    const sandbox = getSandbox(env.DUCK_SANDBOX, dbId, {
+      sleepAfter: 300  // 300 seconds = 5 minutes
+    });
 
     // Mark this request as Quack proxy traffic so the DO forwards it to :9494
     // instead of treating it as Sandbox control-plane traffic.

@@ -19,11 +19,11 @@
 import { Sandbox } from "@cloudflare/sandbox";
 import type { DirectoryBackup } from "@cloudflare/sandbox";
 
-const DB_DIR = "/work";
+const DB_DIR = "/workspace";
 const DB_PATH = `${DB_DIR}/main.duckdb`;
 const QUACK_PORT = 9494;
 const ADMIN_PORT = 8088; // quackhost admin (checkpoint/health), localhost-only
-const REAPER_MS = 60_000; // <- data-loss window. Keep < sleepAfter (10m).
+const REAPER_MS = 240000; // <- data-loss window. Keep < sleepAfter (10m).
 const BACKUP_TTL_S = 7 * 24 * 60 * 60;
 const PROC_ID = "quackhost"; // stable id so we can detect an existing process
 

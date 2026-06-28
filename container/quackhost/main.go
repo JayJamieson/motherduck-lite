@@ -1,4 +1,4 @@
-// quackhost — long-lived process that serves a DuckDB database over the Quack
+// quackhost - long-lived process that serves a DuckDB database over the Quack
 // remote protocol, plus a localhost-only admin endpoint the reaper uses to
 // FORCE CHECKPOINT before snapshotting.
 //
@@ -49,12 +49,12 @@ func sqlString(s string) string {
 
 // runScript executes a multi-statement SQL file against the instance, statement
 // by statement (the driver runs one statement per Exec). Naive ';' splitting:
-// fine for a config/init script — don't put ';\n' inside a string literal.
+// fine for a config/init script - don't put ';\n' inside a string literal.
 func runScript(ctx context.Context, db *sql.DB, path string) error {
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil // no init configured — that's fine
+			return nil // no init configured - that's fine
 		}
 		return err
 	}
@@ -71,7 +71,7 @@ func runScript(ctx context.Context, db *sql.DB, path string) error {
 }
 
 func main() {
-	dbPath := env("DB_PATH", "/work/main.duckdb")
+	dbPath := env("DB_PATH", "/workspace/main.duckdb")
 	host := env("QUACK_HOST", "0.0.0.0")
 	port := env("QUACK_PORT", "9494")
 	token := os.Getenv("QUACK_TOKEN")
@@ -157,7 +157,7 @@ func main() {
 	}()
 
 	// Graceful stop: best-effort final checkpoint. (An ungraceful eviction skips
-	// this — durability still bounded by the reaper's last successful backup.)
+	// this - durability still bounded by the reaper's last successful backup.)
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
 	<-stop
